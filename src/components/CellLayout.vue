@@ -2,7 +2,7 @@
   <div class="block">
     <div
       class="cell"
-      :class="{ cell_filled: data.develop, cell_active: data.id === showPopup }"
+      :class="{ cell_filled: data.develop.title, cell_active: data.id === showPopup }"
       @click="updateShowPopup(data.id)"
     >
       <div class="cell__header">
@@ -14,11 +14,15 @@
           {{ data.develop.title }}
         </div>
         <div class="cell__description">
-          {{ data.develop.members }}
+          {{ data.develop.people }}
         </div>
       </div>
     </div>
-    <Popup v-if="showPopup === data.id" :development="data.develop" :date="data.date"/>
+    <Popup
+      v-if="showPopup === data.id"
+      :development="data.develop"
+      :date="data.date"
+    />
   </div>
 </template>
 

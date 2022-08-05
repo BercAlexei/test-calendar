@@ -17,40 +17,51 @@ export default new Vuex.Store({
       {
         id: 1,
         date: new Date(2022, 6, 31).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        dateShort: new Date(2022, 6, 31).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Закончить проект",
-        members: "Я",
-        description: "Устал уже"
+        people: "Я",
+        description: ""
       },
       {
         id: 2,
         date: new Date(2022, 7, 7).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        dateShort: new Date(2022, 7, 7).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Закончить проект",
-        members: "Я",
-        description: "Устал уже"
+        people: "Я",
+        description: "Заакончить методы добавлени и удаления"
       },
       {
         id: 3,
         date: new Date(2022, 6, 15).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        dateShort: new Date(2022, 6, 15).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Закончить проект",
-        members: "Я",
-        description: "Устал уже"
+        people: "Я",
+        description: ""
       },
       {
         id: 4,
         date: new Date(2022, 6, 1).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        dateShort: new Date(2022, 6, 1).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Закончить проект",
-        members: "Я",
+        people: "Я",
         description: "Устал уже"
       },
       {
         id: 5,
         date: new Date(2021, 11, 31).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        dateShort: new Date(2022, 11, 31).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Встретить новый год!",
-        members: "Я, Саня, Серега, Люда",
+        people: "Я, Саня, Серега, Люда",
         description: "Счастливого нового года!!!"
       }
     ],
-    showPopup: ''
+    showPopup: '',
+    // addDevelop: {
+    //   date: '',
+    //   title: "",
+    //   people: "",
+    //   description: ""
+    // }
   },
 
 
@@ -87,7 +98,13 @@ export default new Vuex.Store({
             day: i,
           },
           dayString: new Date(state.date.currYear, state.date.currMonth, i).toLocaleDateString('ru-RU', { weekday: 'long' }),
-          develop: develop || null
+          develop: {
+            date: '',
+            title: "",
+            people: "",
+            description: "",
+            ...develop
+          }
         });
       }
 
@@ -118,12 +135,18 @@ export default new Vuex.Store({
           days.unshift({
             id: id,
             date: {
-              year: state.date.currYear,
-              month: state.date.currMonth,
-              day: i,
+              year: year,
+              month: month,
+              day: lastWeekOfPrevMonth,
             },
             dayString: new Date(year, month, lastWeekOfPrevMonth).toLocaleDateString('ru-RU', { weekday: 'long' }),
-            develop: develop || null
+            develop: {
+              date: '',
+              title: "",
+              people: "",
+              description: "",
+              ...develop
+            }
           })
         }
       }
@@ -143,12 +166,18 @@ export default new Vuex.Store({
           days.push({
             id: id,
             date: {
-              year: state.date.currYear,
-              month: state.date.currMonth,
+              year: year,
+              month: month,
               day: i,
             },
             dayString: new Date(year, month, i).toLocaleDateString('ru-RU', { weekday: 'long' }),
-            develop: develop || null
+            develop: {
+              date: '',
+              title: "",
+              people: "",
+              description: "",
+              ...develop
+            }
           })
         }
       }
@@ -217,13 +246,5 @@ export default new Vuex.Store({
     updateShowPopup(state, event) {
       state.showPopup = event || ''
     },
-
-    // getDevelop(state, event) {
-    //   state.developments.filter(item => {
-    //     if(item.id === event) {
-    //       console.log(item)
-    //     }
-    //   })
-    // },
   }
 })

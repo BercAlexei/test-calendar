@@ -2,7 +2,7 @@
   <div class="popup" :class="{ popup_right: scrollWidth }">
     <div class="popup__cross" @click="updateShowPopup()"></div>
     <form>
-      <div class="popup__input" v-if="!development">
+      <div class="popup__input" v-if="!development.title">
         <Input placeholder="Событие" />
       </div>
 
@@ -10,24 +10,24 @@
         {{ development.title }}
       </div>
 
-      <div v-if="!development" class="popup__input">
-        <Input placeholder="День, месяц, год" />
+      <div v-if="!development.date" class="popup__input">
+        <Input placeholder="День, месяц, год" :value="parseDate"/>
       </div>
 
       <div v-else class="popup__date">
-        {{ development.date }}
+        {{ development.dateShort }}
       </div>
 
-      <div v-if="!development" class="popup__input">
+      <div v-if="!development.people" class="popup__input">
         <Input placeholder="Имена участников" />
       </div>
 
-      <div v-else class="popup__members">
-        <div class="popup__members-subtitle">Участники:</div>
-        {{ development.members }}
+      <div v-else class="popup__people">
+        <div class="popup__people-subtitle">Участники:</div>
+        {{ development.people }}
       </div>
 
-      <div class="popup__input" v-if="!development">
+      <div class="popup__input" v-if="!development.description">
         <Input placeholder="Описание" textarea />
       </div>
 
@@ -62,6 +62,16 @@ export default {
     development: {
       type: Object,
     },
+    date: {
+      type: Object,
+      require: true
+    }
+  },
+  computed: {
+    parseDate() {
+      let currDay =new Date(this.date.year, this.date.month, this.date.day).toLocaleDateString('ru-RU', {year: 'numeric', month: 'long', day: 'numeric'});
+      return currDay.substring(0, currDay.length - 3)
+    }
   },
   methods: {
     ...mapMutations(["updateShowPopup", "updateInput"]),
@@ -73,6 +83,7 @@ export default {
     ) {
       this.scrollWidth = !this.scrollWidth;
     }
+    console.log(this.date)
   },
 };
 </script>
@@ -140,7 +151,7 @@ export default {
     color: var(--dark-200);
     margin-bottom: 16px;
   }
-  &__members {
+  &__people {
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
@@ -156,6 +167,15 @@ export default {
       color: var(--dark-100);
       margin-bottom: 4px;
     }
+  }
+
+  &__description {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: var(--dark-200);
+    margin-bottom: 16px;
   }
 
   &_right {
