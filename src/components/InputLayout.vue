@@ -23,7 +23,7 @@
       :name="name"
       :required="required"
     ></textarea>
-    <button class="icon" @mousedown="clearInput(name)" v-if="!textarea">
+    <button class="icon" @mousedown="clearInput({state:'newDevelop', name:name})" v-if="!textarea">
       <img src="assets/icons/cross.svg" alt="cross" />
     </button>
   </div>

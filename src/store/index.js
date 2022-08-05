@@ -56,14 +56,14 @@ export default new Vuex.Store({
       }
     ],
     showPopup: '',
-    // addDevelop: {
-    //   date: '',
-    //   title: "",
-    //   people: "",
-    //   description: ""
-    // }
+    newDevelop: {
+      date: '',
+      dateShort: '',
+      title: "sdfg",
+      people: "",
+      description: ""
+    }
   },
-
 
   getters: {
     getStringMonths(state) {
@@ -190,27 +190,27 @@ export default new Vuex.Store({
 
   mutations: {
     updateInput(state, event) {
-      getProp(state)
+      getProp(state[event.state])
+
+      function getProp(obj) {
+        for (let key in obj) {
+          if (typeof (obj[key]) === 'object') {
+            getProp(obj[key])
+          } else if (key == event.target.name) {
+            obj[key] = event.target.value
+          }
+        }
+      }
+    },
+
+    clearInput(state, event) {
+      getProp(state[event.state])
 
       function getProp(obj) {
         for (let key in obj) {
           if (typeof (obj[key]) === 'object') {
             getProp(obj[key])
           } else if (key == event.name) {
-            obj[key] = event.value
-          }
-        }
-      }
-    },
-
-    clearInput(state, name) {
-      getProp(state)
-
-      function getProp(obj) {
-        for (let key in obj) {
-          if (typeof (obj[key]) === 'object') {
-            getProp(obj[key])
-          } else if (key == name) {
             obj[key] = ''
           }
         }
@@ -246,5 +246,12 @@ export default new Vuex.Store({
     updateShowPopup(state, event) {
       state.showPopup = event || ''
     },
+    // addDevelop(state, event){
+
+    // },
+    delDevelop(state, event) {
+      state.developments = state.developments.filter(item => item.date !== event)
+
+    }
   }
 })

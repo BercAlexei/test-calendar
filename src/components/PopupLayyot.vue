@@ -1,17 +1,18 @@
 <template>
   <div class="popup" :class="{ popup_right: scrollWidth }">
     <div class="popup__cross" @click="updateShowPopup()"></div>
-    <form>
+    <form @submit.prevent>
       <div class="popup__input" v-if="!development.title">
-        <Input placeholder="Событие" />
+        <Input placeholder="Событие" @input="updateInput({state: 'newDevelop', target: $event})" :value="newDevelop.title" name="title"/>
       </div>
 
       <div v-else class="popup__title">
         {{ development.title }}
       </div>
 
-      <div v-if="!development.date" class="popup__input">
-        <Input placeholder="День, месяц, год" :value="parseDate"/>
+      <!-- Зачем здесь это поле???? -->
+      <div v-if="!development.date" class="popup__input" >
+        <Input placeholder="День, месяц, год" />
       </div>
 
       <div v-else class="popup__date">
@@ -19,7 +20,7 @@
       </div>
 
       <div v-if="!development.people" class="popup__input">
-        <Input placeholder="Имена участников" />
+        <Input placeholder="Имена участников"/>
       </div>
 
       <div v-else class="popup__people">
@@ -36,7 +37,7 @@
       </div>
       <div class="popup__btns">
         <Btn extra text="Готово" />
-        <Btn extra text="Удалить" />
+        <Btn extra text="Удалить" @click="delDevelop(development.date)"/>
       </div>
     </form>
   </div>
@@ -46,7 +47,7 @@
 import Input from "@/components/InputLayout.vue";
 import Btn from "@/components/ButtonLayout.vue";
 
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   data() {
@@ -68,13 +69,14 @@ export default {
     }
   },
   computed: {
+    ...mapState(["newDevelop"]),
     parseDate() {
       let currDay =new Date(this.date.year, this.date.month, this.date.day).toLocaleDateString('ru-RU', {year: 'numeric', month: 'long', day: 'numeric'});
       return currDay.substring(0, currDay.length - 3)
     }
   },
   methods: {
-    ...mapMutations(["updateShowPopup", "updateInput"]),
+    ...mapMutations(["updateShowPopup", "updateInput", "delDevelop", "clearInput"]),
   },
   mounted() {
     if (
