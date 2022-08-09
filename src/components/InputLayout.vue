@@ -3,12 +3,12 @@
     <input
       type="text"
       class="input"
+      :class="{input_error: !valid}"
       :value="value"
       @input="$emit('input', $event.target)"
       :disabled="disabled"
       :placeholder="placeholder"
       :name="name"
-      :required="required"
       v-if="!textarea"
     />
     <textarea
@@ -21,7 +21,6 @@
       :disabled="disabled"
       :placeholder="placeholder"
       :name="name"
-      :required="required"
     ></textarea>
     <button class="icon" @mousedown="clearInput({state:'newDevelop', name:name})" v-if="!textarea">
       <img src="assets/icons/cross.svg" alt="cross" />
@@ -43,14 +42,15 @@ export default {
     disabled: {
       type: Boolean,
     },
-    required: {
-      type: Boolean,
-    },
+    
     name: {
       type: String,
       require: true,
     },
     textarea: {
+      type: Boolean
+    },
+    valid: {
       type: Boolean
     }
   },
@@ -92,7 +92,7 @@ export default {
     }
   }
 
-  &:invalid {
+  &_error {
     border: 1px solid var(--red);
     &::placeholder {
       color: var(--red);

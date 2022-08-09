@@ -11,7 +11,7 @@
           <div class="header__input">
             <div class="header__input-image"></div>
 
-            <Input placeholder="Search..." />
+            <Input placeholder="Search..." :valid="true"/>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     ...mapMutations(["nextMonth", "prevMonth", "goToday"]),
-  },
+  }
 };
 </script>
 

@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  strict: true,
   state: {
     date: {
       // текущий день месяца(число)
@@ -16,7 +17,7 @@ export default new Vuex.Store({
     developments: [
       {
         id: 1,
-        date: new Date(2022, 6, 31).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        date: new Date(2022, 6, 31).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }),
         dateShort: new Date(2022, 6, 31).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Закончить проект",
         people: "Я",
@@ -24,7 +25,7 @@ export default new Vuex.Store({
       },
       {
         id: 2,
-        date: new Date(2022, 7, 7).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        date: new Date(2022, 7, 7).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }),
         dateShort: new Date(2022, 7, 7).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Закончить проект",
         people: "Я",
@@ -32,7 +33,7 @@ export default new Vuex.Store({
       },
       {
         id: 3,
-        date: new Date(2022, 6, 15).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        date: new Date(2022, 6, 15).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }),
         dateShort: new Date(2022, 6, 15).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Закончить проект",
         people: "Я",
@@ -40,7 +41,7 @@ export default new Vuex.Store({
       },
       {
         id: 4,
-        date: new Date(2022, 6, 1).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        date: new Date(2022, 6, 1).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }),
         dateShort: new Date(2022, 6, 1).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Закончить проект",
         people: "Я",
@@ -48,7 +49,7 @@ export default new Vuex.Store({
       },
       {
         id: 5,
-        date: new Date(2021, 11, 31).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+        date: new Date(2021, 11, 31).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }),
         dateShort: new Date(2022, 11, 31).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: "Встретить новый год!",
         people: "Я, Саня, Серега, Люда",
@@ -57,12 +58,12 @@ export default new Vuex.Store({
     ],
     showPopup: '',
     newDevelop: {
-      date: '',
-      dateShort: '',
-      title: "sdfg",
+      date: "",
+      title: "",
       people: "",
       description: ""
-    }
+    },
+    scrollWidth: false,
   },
 
   getters: {
@@ -70,8 +71,6 @@ export default new Vuex.Store({
       let currMonth = new Date(state.date.currYear, state.date.currMonth, state.date.currDay).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long' });
       return currMonth.substring(0, currMonth.length - 3);
     },
-
-
 
     createCalendar(state) {
       let days = [];
@@ -81,13 +80,10 @@ export default new Vuex.Store({
       let lastDateOfMonth = new Date(state.date.currYear, state.date.currMonth + 1, 0).getDate()
       // день недели последнего числа текущего месяца
       let lastDayOfMonth = new Date(state.date.currYear, state.date.currMonth, lastDateOfMonth).getDay()
-      /**
-       * ! еще подумать
-       */
       //запись дней текущего месяца
       for (let i = 1; i <= lastDateOfMonth; i++) {
         // создание id для массива
-        let id = new Date(state.date.currYear, state.date.currMonth, i).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+        let id = new Date(state.date.currYear, state.date.currMonth, i).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
         let develop = state.developments.filter(item => item.date === id)[0]
 
         days.push({
@@ -127,7 +123,7 @@ export default new Vuex.Store({
           let year = state.date.currMonth == 0 ? new Date(state.date.currYear - 1, 12, 0).getFullYear() : state.date.currYear;
           let month = lastWeekOfPrevMonth ? new Date(state.date.currYear, state.date.currMonth, 0).getMonth() : state.date.currMonth;
           // создание id для массива
-          let id = new Date(year, month, lastWeekOfPrevMonth).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+          let id = new Date(year, month, lastWeekOfPrevMonth).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
 
           // фильтрация массива событий
           let develop = state.developments.filter(item => item.date === id)[0]
@@ -160,7 +156,7 @@ export default new Vuex.Store({
           let year = state.date.currMonth == 11 ? new Date(state.date.currYear + 1, 1, 0).getFullYear() : state.date.currYear;
           let month = i ? new Date(state.date.currYear, state.date.currMonth + 1, 1).getMonth() : state.date.currMonth;
 
-          let id = new Date(year, month, i).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+          let id = new Date(year, month, i).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
           let develop = state.developments.filter(item => item.date === id)[0]
 
           days.push({
@@ -182,7 +178,6 @@ export default new Vuex.Store({
         }
       }
 
-      console.log(days)
       return days;
     }
   },
@@ -240,18 +235,51 @@ export default new Vuex.Store({
     goToday(state) {
       state.date.currYear = new Date().getFullYear();
       state.date.currMonth = new Date().getMonth();
-      state.showPopup = new Date(state.date.currYear, state.date.currMonth, state.date.currDay).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+      state.showPopup = new Date(state.date.currYear, state.date.currMonth, state.date.currDay).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
     },
 
     updateShowPopup(state, event) {
+      if(event !== state.showPopup) {
+        state.scrollWidth = false;
+      }
+      state.newDevelop.title = '';
+      state.newDevelop.people = '';
+      state.newDevelop.description = '';
+      state.newDevelop.date = event
       state.showPopup = event || ''
     },
-    // addDevelop(state, event){
 
-    // },
+    updateScrollWidth(state) {
+      if (
+        document.documentElement.offsetWidth <
+        document.documentElement.scrollWidth
+      ) {
+        state.scrollWidth = true;
+      }
+    },
+
+    addDevelop(state, { year, month, day }) {
+      console.log(state.newDevelop, year, month, day)
+      state.developments.push({
+        id: state.developments.length + 1,
+        date: new Date(year, month, day).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }),
+        dateShort: new Date(year, month, day).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
+        title: state.newDevelop.title,
+        people: state.newDevelop.people,
+        description: state.newDevelop.description
+      })
+      state.newDevelop.title = '';
+      state.newDevelop.people = '';
+      state.newDevelop.description = '';
+    },
     delDevelop(state, event) {
-      state.developments = state.developments.filter(item => item.date !== event)
-
+      if (event) {
+        state.developments = state.developments.filter(item => item.date !== event)
+      } else {
+        state.newDevelop.title = '';
+        state.newDevelop.people = '';
+        state.newDevelop.description = '';
+      }
     }
   }
 })

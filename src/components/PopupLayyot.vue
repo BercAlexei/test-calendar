@@ -3,7 +3,12 @@
     <div class="popup__cross" @click="updateShowPopup()"></div>
     <form @submit.prevent>
       <div class="popup__input" v-if="!development.title">
-        <Input placeholder="Событие" @input="updateInput({state: 'newDevelop', target: $event})" :value="newDevelop.title" name="title"/>
+        <Input
+          placeholder="Событие"
+          v-model.trim="title"
+          name="title"
+          :valid="!$v.title.$error"
+        />
       </div>
 
       <div v-else class="popup__title">
@@ -11,8 +16,13 @@
       </div>
 
       <!-- Зачем здесь это поле???? -->
-      <div v-if="!development.date" class="popup__input" >
-        <Input placeholder="День, месяц, год" />
+      <div v-if="!development.date" class="popup__input">
+        <Input
+          placeholder="День, месяц, год"
+          :value="dateState"
+          disabled
+          :valid="!$v.dateState.$error"
+        />
       </div>
 
       <div v-else class="popup__date">
@@ -20,7 +30,12 @@
       </div>
 
       <div v-if="!development.people" class="popup__input">
-        <Input placeholder="Имена участников"/>
+        <Input
+          placeholder="Имена участников"
+          v-model.trim="people"
+          name="people"
+          :valid="!$v.people.$error"
+        />
       </div>
 
       <div v-else class="popup__people">
@@ -29,15 +44,21 @@
       </div>
 
       <div class="popup__input" v-if="!development.description">
-        <Input placeholder="Описание" textarea />
+        <Input
+          placeholder="Описание"
+          textarea
+          v-model.trim="description"
+          name="description"
+        />
       </div>
 
       <div class="popup__description" v-else>
         {{ development.description }}
       </div>
+
       <div class="popup__btns">
-        <Btn extra text="Готово" />
-        <Btn extra text="Удалить" @click="delDevelop(development.date)"/>
+        <Btn extra text="Готово" :disabled="$v.$invalid" @click="addDevelop(date)"/>
+        <Btn extra text="Удалить" @click="delDevelop(development.date)" />
       </div>
     </form>
   </div>
@@ -47,14 +68,10 @@
 import Input from "@/components/InputLayout.vue";
 import Btn from "@/components/ButtonLayout.vue";
 
+import { required } from "vuelidate/lib/validators";
 import { mapMutations, mapState } from "vuex";
 
 export default {
-  data() {
-    return {
-      scrollWidth: false,
-    };
-  },
   components: {
     Input,
     Btn,
@@ -65,27 +82,72 @@ export default {
     },
     date: {
       type: Object,
-      require: true
-    }
+      require: true,
+    },
   },
   computed: {
-    ...mapState(["newDevelop"]),
-    parseDate() {
-      let currDay =new Date(this.date.year, this.date.month, this.date.day).toLocaleDateString('ru-RU', {year: 'numeric', month: 'long', day: 'numeric'});
-      return currDay.substring(0, currDay.length - 3)
-    }
+    ...mapState(["scrollWidth"]),
+    title: {
+      get() {
+        return this.$store.state.newDevelop.title;
+      },
+      set(value) {
+        this.$v.title.$touch();
+        this.updateInput({ state: "newDevelop", target: value });
+      },
+    },
+
+    dateState: {
+      get() {
+        return this.$store.state.newDevelop.date;
+      },
+      set(value) {
+        this.$v.dateState.$touch();
+        this.updateInput({ state: "newDevelop", target: value });
+      },
+    },
+
+    people: {
+      get() {
+        return this.$store.state.newDevelop.people;
+      },
+      set(value) {
+        this.$v.people.$touch();
+        this.updateInput({ state: "newDevelop", target: value });
+      },
+    },
+
+    description: {
+      get() {
+        return this.$store.state.newDevelop.description;
+      },
+      set(value) {
+        this.updateInput({ state: "newDevelop", target: value });
+      },
+    },
   },
   methods: {
-    ...mapMutations(["updateShowPopup", "updateInput", "delDevelop", "clearInput"]),
+    ...mapMutations([
+      "updateShowPopup",
+      "updateInput",
+      "delDevelop",
+      "updateScrollWidth",
+      "addDevelop"
+    ]),
+  },
+  validations: {
+    title: {
+      required: required,
+    },
+    dateState: {
+      required: required,
+    },
+    people: {
+      required: required,
+    },
   },
   mounted() {
-    if (
-      document.documentElement.offsetWidth !==
-      document.documentElement.scrollWidth
-    ) {
-      this.scrollWidth = !this.scrollWidth;
-    }
-    console.log(this.date)
+    this.updateScrollWidth();
   },
 };
 </script>
