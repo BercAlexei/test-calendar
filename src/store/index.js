@@ -177,7 +177,7 @@ export default new Vuex.Store({
           })
         }
       }
-
+      console.log(days)
       return days;
     }
   },
@@ -239,7 +239,7 @@ export default new Vuex.Store({
     },
 
     updateShowPopup(state, event) {
-      if(event !== state.showPopup) {
+      if (event !== state.showPopup) {
         state.scrollWidth = false;
       }
       state.newDevelop.title = '';
@@ -258,27 +258,52 @@ export default new Vuex.Store({
       }
     },
 
-    addDevelop(state, { year, month, day }) {
-      console.log(state.newDevelop, year, month, day)
+    addDevelop(state, event) {
       state.developments.push({
         id: state.developments.length + 1,
-        date: new Date(year, month, day).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }),
-        dateShort: new Date(year, month, day).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
+        date: new Date(event.date.year, event.date.month, event.date.day).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }),
+        dateShort: new Date(event.date.year, event.date.month, event.date.day).toLocaleDateString('ru-RU', { day: 'numeric', weekday: 'long' }),
         title: state.newDevelop.title,
         people: state.newDevelop.people,
         description: state.newDevelop.description
       })
+      localStorage.setItem('db', JSON.stringify(state.developments))
       state.newDevelop.title = '';
       state.newDevelop.people = '';
       state.newDevelop.description = '';
+      state.showPopup = '';
     },
+
+    updateDevelopments(state, event) {
+      state.developments = state.developments.map(item => {
+        if (item.id === event) {
+          item.description = state.newDevelop.description
+          state.newDevelop.description = '';
+          return item
+        } else {
+          return item
+        }
+      })
+      
+      localStorage.setItem('db', JSON.stringify(state.developments))
+    },
+
     delDevelop(state, event) {
       if (event) {
         state.developments = state.developments.filter(item => item.date !== event)
+        localStorage.setItem('db', JSON.stringify(state.developments))
       } else {
         state.newDevelop.title = '';
         state.newDevelop.people = '';
         state.newDevelop.description = '';
+      }
+    },
+
+    updateLocalStorage(state) {
+      if (!localStorage.getItem('db')) {
+        localStorage.setItem('db', JSON.stringify(state.developments))
+      } else {
+        state.developments = JSON.parse(localStorage.getItem('db'))
       }
     }
   }

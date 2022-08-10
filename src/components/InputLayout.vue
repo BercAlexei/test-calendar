@@ -3,7 +3,7 @@
     <input
       type="text"
       class="input"
-      :class="{input_error: !valid}"
+      :class="{ input_error: !valid }"
       :value="value"
       @input="$emit('input', $event.target)"
       :disabled="disabled"
@@ -22,7 +22,12 @@
       :placeholder="placeholder"
       :name="name"
     ></textarea>
-    <button class="icon" @mousedown="clearInput({state:'newDevelop', name:name})" v-if="!textarea">
+    <button
+      class="icon"
+      @mousedown="clearInput({ state: 'newDevelop', name: name })"
+      v-if="!textarea"
+      type="button"
+    >
       <img src="assets/icons/cross.svg" alt="cross" />
     </button>
   </div>
@@ -42,17 +47,17 @@ export default {
     disabled: {
       type: Boolean,
     },
-    
+
     name: {
       type: String,
       require: true,
     },
     textarea: {
-      type: Boolean
+      type: Boolean,
     },
     valid: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   methods: {
     ...mapMutations(["clearInput"]),

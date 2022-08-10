@@ -11,7 +11,7 @@
           <div class="header__input">
             <div class="header__input-image"></div>
 
-            <Input placeholder="Search..." :valid="true"/>
+            <Input placeholder="Search..." :valid="true" />
           </div>
         </div>
       </div>
@@ -72,7 +72,10 @@ export default {
     ...mapGetters(["getStringMonths", "createCalendar"]),
   },
   methods: {
-    ...mapMutations(["nextMonth", "prevMonth", "goToday"]),
+    ...mapMutations(["nextMonth", "prevMonth", "goToday",  "updateLocalStorage"]),
+  },
+  created() {
+    this.updateLocalStorage()
   }
 };
 </script>

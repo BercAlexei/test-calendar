@@ -4,6 +4,7 @@
     :class="{ btn_extra: extra, btn_icon: icon }"
     :disabled="disabled"
     @click="$emit('click')"
+    :type="type"
   >
     <svg
       v-if="icon"
@@ -43,6 +44,10 @@ export default {
     optionIcon: {
       type: Object,
     },
+    type : {
+      type: String, 
+      default: 'button'
+    }
   },
 };
 </script>

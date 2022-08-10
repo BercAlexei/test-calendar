@@ -1,13 +1,13 @@
 <template>
   <div class="popup" :class="{ popup_right: scrollWidth }">
     <div class="popup__cross" @click="updateShowPopup()"></div>
-    <form @submit.prevent>
+    <form @submit.prevent="addDevelopLocal()">
       <div class="popup__input" v-if="!development.title">
         <Input
           placeholder="Событие"
           v-model.trim="title"
           name="title"
-          :valid="!$v.title.$error"
+          :valid="!submitStatus"
         />
       </div>
 
@@ -21,7 +21,7 @@
           placeholder="День, месяц, год"
           :value="dateState"
           disabled
-          :valid="!$v.dateState.$error"
+          :valid="true"
         />
       </div>
 
@@ -34,7 +34,7 @@
           placeholder="Имена участников"
           v-model.trim="people"
           name="people"
-          :valid="!$v.people.$error"
+          :valid="!submitStatus"
         />
       </div>
 
@@ -57,7 +57,19 @@
       </div>
 
       <div class="popup__btns">
-        <Btn extra text="Готово" :disabled="$v.$invalid" @click="addDevelop(date)"/>
+        <Btn
+          extra
+          text="Готово"
+          type="submit"
+          :disabled="
+            development.title &&
+            development.date &&
+            development.people &&
+            development.description
+              ? true
+              : false
+          "
+        />
         <Btn extra text="Удалить" @click="delDevelop(development.date)" />
       </div>
     </form>
@@ -72,6 +84,11 @@ import { required } from "vuelidate/lib/validators";
 import { mapMutations, mapState } from "vuex";
 
 export default {
+  data() {
+    return {
+      submitStatus: false,
+    };
+  },
   components: {
     Input,
     Btn,
@@ -132,8 +149,24 @@ export default {
       "updateInput",
       "delDevelop",
       "updateScrollWidth",
-      "addDevelop"
+      "addDevelop",
+      "updateDevelopments",
     ]),
+
+    addDevelopLocal() {
+      if (!this.$v.$invalid) {
+        this.addDevelop({ date: this.date, develop: this.development });
+      } else if (
+        this.development.title &&
+        this.development.date &&
+        this.development.people &&
+        !this.development.description
+      ) {
+        this.updateDevelopments(this.development.id);
+      } else {
+        this.submitStatus = true;
+      }
+    },
   },
   validations: {
     title: {
