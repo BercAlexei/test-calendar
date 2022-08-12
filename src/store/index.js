@@ -80,6 +80,7 @@ export default new Vuex.Store({
       let lastDateOfMonth = new Date(state.date.currYear, state.date.currMonth + 1, 0).getDate()
       // день недели последнего числа текущего месяца
       let lastDayOfMonth = new Date(state.date.currYear, state.date.currMonth, lastDateOfMonth).getDay()
+
       //запись дней текущего месяца
       for (let i = 1; i <= lastDateOfMonth; i++) {
         // создание id для массива
@@ -106,24 +107,21 @@ export default new Vuex.Store({
 
       //запись дней предыдущего месяца
       if (firstDayOfMonth != 1) {
-
+        
         // последнее число предыдущего месяца
-        let lastDateOfPrevMonth;
+        let lastDateOfPrevMonth = state.date.currMonth === 0 ? new Date(state.date.currYear - 1, 12, 0).getDate() : new Date(state.date.currYear, state.date.currMonth, 0).getDate();
 
-        if (state.date.currMonth == 0) {
-          lastDateOfPrevMonth = new Date(state.date.currYear - 1, 12, 0).getDate()
-        } else {
-          lastDateOfPrevMonth = new Date(state.date.currYear, state.date.currMonth, 0).getDate();
-        }
+        // вычисление сколько дней добавить в начало если первое число месяца выпадает на "вс"
+        let lastWeekOfprevMonth = firstDayOfMonth === 0 ? 7 - firstDayOfMonth : firstDayOfMonth;
 
-        for (let i = 1; i < firstDayOfMonth; i++) {
+        for (let i = 0; i < lastWeekOfprevMonth - 1; i++) {
           // вычисление последних дней предыдущего месяца
-          let lastWeekOfPrevMonth = lastDateOfPrevMonth - i + 1;
+          let lastDaysOfPrevMonth = lastDateOfPrevMonth - i;
           // вычисление предыдущего месяца и года
           let year = state.date.currMonth == 0 ? new Date(state.date.currYear - 1, 12, 0).getFullYear() : state.date.currYear;
-          let month = lastWeekOfPrevMonth ? new Date(state.date.currYear, state.date.currMonth, 0).getMonth() : state.date.currMonth;
+          let month = lastDaysOfPrevMonth ? new Date(state.date.currYear, state.date.currMonth, 0).getMonth() : state.date.currMonth;
           // создание id для массива
-          let id = new Date(year, month, lastWeekOfPrevMonth).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
+          let id = new Date(year, month, lastDaysOfPrevMonth).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
 
           // фильтрация массива событий
           let develop = state.developments.filter(item => item.date === id)[0]
@@ -133,9 +131,9 @@ export default new Vuex.Store({
             date: {
               year: year,
               month: month,
-              day: lastWeekOfPrevMonth,
+              day: lastDaysOfPrevMonth,
             },
-            dayString: new Date(year, month, lastWeekOfPrevMonth).toLocaleDateString('ru-RU', { weekday: 'long' }),
+            dayString: new Date(year, month, lastDaysOfPrevMonth).toLocaleDateString('ru-RU', { weekday: 'long' }),
             develop: {
               date: '',
               title: "",
@@ -177,7 +175,7 @@ export default new Vuex.Store({
           })
         }
       }
-      console.log(days)
+      // console.log(days)
       return days;
     }
   },
